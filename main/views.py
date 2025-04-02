@@ -113,15 +113,15 @@ class EnrollInCourseView(generics.CreateAPIView):
         user = self.request.user
         course = Course.objects.get(id=serializer.validated_data['course_id'])
 
-        # Toʻlovni tekshirish
+
         if not Payment.objects.filter(user=user, course=course, status="completed").exists():
             return Response({"error": "You must purchase the course first."}, status=400)
 
-        # Talabani qo‘shish (ManyToManyField uchun)
+
         student, created = Student.objects.get_or_create(user=user)
         student.course.add(course)
 
-        # ✅ Foydalanuvchi ma'lumotlarini qaytarish
+
         return Response({
             "course_id": course.id,
             "course_title": course.title,
